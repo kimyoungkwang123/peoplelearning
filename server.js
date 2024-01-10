@@ -42,7 +42,7 @@ app.get('/data', async (req, res) => {
 
 // 로그인 처리
 app.post('/login', express.json(), async (req, res) => {
-  const { username, password } = req.body;
+  const { userEmail, password } = req.body;
 
   let conn;
   try {
@@ -50,7 +50,7 @@ app.post('/login', express.json(), async (req, res) => {
     const result = await conn.query('SELECT * FROM users WHERE userEmail = ? AND password = ?', [userEmail, password]);
 
     if (result.length > 0) {
-      res.status(200).send('Login successful!');
+      res.status(200).send('로그인 성공');
     } else {
       res.status(401).send('Invalid credentials');
     }
@@ -61,6 +61,11 @@ app.post('/login', express.json(), async (req, res) => {
     if (conn) conn.end();
   }
 });
+
+//회원 가입 처리
+app.post('/login',express.json(), async(req, res)=>{
+
+})
 
 
 // 서버 시작

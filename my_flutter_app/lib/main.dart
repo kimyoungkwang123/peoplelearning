@@ -36,9 +36,9 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     if (response.statusCode == 200) {
-      print('Login successful');
+      print('로그인 성공');
     } else {
-      print('Login failed');
+      print('로그인 실패');
     }
   }
 
