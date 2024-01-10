@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -9,9 +10,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Login App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: LoginPage(),
     );
   }
@@ -23,14 +21,32 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _userEmailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  void _login() async {
+    String userEmail = _userEmailController.text;
+    String password = _passwordController.text;
+
+    // 서버로 로그인 요청을 보내는 부분
+    // 이 부분에서 서버 주소와 실제 로그인 처리 로직을 구현해야 합니다.
+    var response = await http.post(
+      Uri.parse('http://15.164.219.104:3010/login'),
+      body: {'userEmail': userEmail, 'password': password},
+    );
+
+    if (response.statusCode == 200) {
+      print('Login successful');
+    } else {
+      print('Login failed');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('로그인'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,30 +54,19 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-              ),
+              controller: _userEmailController,
+              decoration: InputDecoration(labelText: 'User Email'),
             ),
             SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true, // 비밀번호를 숨기기 위해 사용
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () {
-                // 여기에 로그인 처리 로직을 추가
-                String username = _usernameController.text;
-                String password = _passwordController.text;
-                // 실제 로그인 처리 로직을 여기에 추가
-                // 이 예제에서는 간단하게 로그인 성공을 출력합니다.
-                print('Login successful! Username: $username, Password: $password');
-              },
-              child: Text('Login'),
+              onPressed: _login,
+              child: Text('로그인'),
             ),
           ],
         ),

@@ -47,7 +47,7 @@ app.post('/login', express.json(), async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const result = await conn.query('SELECT * FROM users WHERE username = ? AND password = ?', [userEmail, password]);
+    const result = await conn.query('SELECT * FROM users WHERE userEmail = ? AND password = ?', [userEmail, password]);
 
     if (result.length > 0) {
       res.status(200).send('Login successful!');
