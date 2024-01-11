@@ -10,9 +10,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Login App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: LoginPage(),
     );
   }
@@ -24,37 +21,32 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _userEmailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  // 추가된 부분 시작
-  Future<void> _login() async {
-    String username = _usernameController.text;
+  void _login() async {
+    String userEmail = _userEmailController.text;
     String password = _passwordController.text;
 
-    final Uri uri = Uri.parse('http://localhost:3000/login');
-    final response = await http.post(
-      uri,
-      body: {
-        'username': username,
-        'password': password,
-      },
+    // 서버로 로그인 요청을 보내는 부분
+    // 이 부분에서 서버 주소와 실제 로그인 처리 로직을 구현해야 합니다.
+    var response = await http.post(
+      Uri.parse('http://15.164.219.104:3010/login'),
+      body: {'userEmail': userEmail, 'password': password},
     );
 
     if (response.statusCode == 200) {
-      print('Login successful! Response: ${response.body}');
+      print('로그인 성공');
     } else {
-      print('Login failed. Status code: ${response.statusCode}');
+      print('로그인 실패');
     }
   }
-  // 추가된 부분 끝
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
-        backgroundColor: Colors.greenAccent,
+        title: Text('로그인'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -62,36 +54,20 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-              ),
+              controller: _userEmailController,
+              decoration: InputDecoration(labelText: 'User Email'),
             ),
             SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-              ),
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 32),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  
-                  ElevatedButton(
-                    onPressed: _login,
-                    child: Text('로그인'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _login,
-                    child: Text('회원가입'),
-                  )
-                ],
-              ),
-            )
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _login,
+              child: Text('로그인'),
+            ),
           ],
         ),
       ),
