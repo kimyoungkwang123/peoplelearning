@@ -16,12 +16,6 @@ const pool = mariadb.createPool({
   connectionLimit: 10
 });
 
-
-// 루트 경로에 "안녕" 출력
-app.get('/', (req, res) => {
-  res.send('안녕');
-});
-
 app.get('/data', async (req, res) => {
   let conn;
   try {
@@ -39,7 +33,6 @@ app.get('/data', async (req, res) => {
     }
   }
 });
-
 
 
 // 로그인 처리
@@ -67,38 +60,51 @@ app.post('/login', express.json(), async (req, res) => {
 });
 
 //회원가입 처리
-app.post('/signup', async (req, res) => {
-  const { userEmail, cellphone, password, userName } = req.query;
-  const userType = 'student';
 
-  // 비밀번호 해싱
-  const hashedPassword = await bcrypt.hash(password, 10);
+app.post('/signup', express.json(), async (req, res) => {
+  const { userEmail, cellphone, password, userName } = req.body;
 
-  let conn;
   try {
-    conn = await pool.getConnection();
+    // 사용자 이메일 중복 확인
+    const existingUser = await conn.query(
+      "SELECT * FROM `users` WHERE `userEmail` = ?",
+      [userEmail]
+    );
 
-    // userEmail 중복 확인
-    const checkDuplicateEmailQuery = 'SELECT COUNT(*) as count FROM users WHERE userEmail = ?';
-    const [duplicateCheckResult] = await conn.query(checkDuplicateEmailQuery, [userEmail]);
-
-    if (duplicateCheckResult[0].count > 0) {
-      res.status(409).json({ message: '이미 존재하는 이메일입니다.' });
+    if (existingUser.length > 0) {
+      // 이미 존재하는 이메일인 경우 회원가입 실패
+      res.status(401).json({
+        code: 401,
+        message: '이미 존재하는 이메일입니다.',
+      });
       return;
     }
 
-    // 사용자 등록
-    const insertUserQuery = 'INSERT INTO users (userEmail, cellphone, password, userName, userType) VALUES (?, ?, ?, ?, ?)';
-    await conn.query(insertUserQuery, [userEmail, cellphone, hashedPassword, userName, userType]);
+    // 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    res.status(201).json({ message: '회원가입 성공' });
+    // 사용자 추가
+    const result = await conn.query(
+      "INSERT INTO `users` (`userEmail`, `cellphone`, `password`, `userName`, `userType`) VALUES (?, ?, ?, ?, 'student')",
+      [userEmail, cellphone, hashedPassword, userName]
+    );
+
+    // 회원가입 성공
+    res.status(200).json({
+      code: 200,
+      message: '회원가입 성공',
+    });
   } catch (err) {
     console.error('Signup error:', err);
-    res.status(500).json({ message: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.end();
+    // 회원가입 실패
+    res.status(500).json({
+      code: 500,
+      message: 'Internal Server Error',
+    });
   }
 });
+
+
 
 
 // 서버 시작
