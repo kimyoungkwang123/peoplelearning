@@ -25,7 +25,7 @@ app.get('/data', async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Internal Server Error11', details: err.message });
+    res.status(500).json({ error : 'Internal Server Error11', details : err.message });
   } finally {
     if (conn) {
       // 연결을 풀에 반환하는 부분
