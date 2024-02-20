@@ -1,0 +1,14 @@
+const mariadb = require('mariadb');
+
+// MariaDB 연결 풀 설정
+const pool = mariadb.createPool({
+    host: 'localhost',
+    user: 'rla990411',
+    password: 'qwer1234',
+    database: 'project',
+    port: 3306,
+    connectionLimit: 30
+  }); 
+
+
+  module.exports = { pool };
