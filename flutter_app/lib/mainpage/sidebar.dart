@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/mainpage/user/Purchase%20history.dart';
 import 'package:flutter_app/mainpage/login-page.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../main-page.dart';
 import 'signup-page.dart';
 import 'user/mylecture.dart';
@@ -150,12 +151,7 @@ class _SideBarState extends State<SideBar> {
                           PopupMenuItem(
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.pop(context); // 팝업 메뉴 닫기
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MainPage()),
-                                );
+                                onLogoutPressed(context); // 로그아웃 메서드 호출
                               },
                               child: Text('로그아웃'),
                             ),
@@ -340,15 +336,31 @@ class _SideBarState extends State<SideBar> {
             onTap: () async {
               // Home 버튼을 클릭했을 때의 동작
               Navigator.pop(widget.parentContext); // 사이드바를 닫음
-              try {
-                await UserApi.instance.logout();
-                print('로그아웃 성공, SDK에서 토큰 삭제');
-              } catch (error) {
-                print('로그아웃 실패, SDK에서 토큰 삭제 $error');
-              }
             },
           ),
         ],
+      ),
+    );
+  }
+
+  void onLogoutPressed(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token'); // 토큰 삭제
+
+    // 토큰이 삭제되었는지 여부 확인
+    bool isTokenDeleted = !(prefs.containsKey('token'));
+
+    if (isTokenDeleted) {
+      print('토큰이 삭제되었습니다.');
+    } else {
+      print('토큰 삭제에 실패했습니다.');
+    }
+
+    // 로그아웃 후 로그인 페이지로 이동
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainPage(),
       ),
     );
   }

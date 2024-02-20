@@ -44,8 +44,14 @@ router.post('/login', express.json(), async (req, res) => {
         return res.status(200).json({
           code: 200,
           message: '로그인 성공',
-          token: token // 클라이언트에게 토큰 전달
+          token: token, // 토큰 전달
+          userEmail: user.userEmail,
+          userName: user.userName,
         });
+
+       
+
+        
       } else {
         return res.status(401).json({
           code: 401,
@@ -279,3 +285,4 @@ router.get('/search', async (req, res) => {
 
  
   module.exports = router;
+

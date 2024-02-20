@@ -14,7 +14,6 @@ class MainPageLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     String userEmail = userInfo?['userEmail'] ?? 'Unknown';
     String userName = userInfo?['userName'] ?? 'Unknown';
-    String password = userInfo?['password'] ?? 'Unknown';
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
@@ -82,8 +81,6 @@ class MainPageLogin extends StatelessWidget {
               ),
             ),
             PopularLectures(),
-
-            // 다른 내용을 추가할 수 있음
           ],
         ),
       ),

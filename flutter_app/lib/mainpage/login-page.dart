@@ -228,14 +228,6 @@ class _LoginPageState extends State<LoginPage> {
           // 토큰 저장
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('token', token);
-
-          // 토큰 확인
-          String? savedToken = prefs.getString('token');
-          if (savedToken != null) {
-            print('토큰이 저장되었습니다: $savedToken');
-          } else {
-            print('토큰 저장에 실패했습니다.');
-          }
         }
 
         // 성공 시 페이지 이동
